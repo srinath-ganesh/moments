@@ -41,12 +41,28 @@ It will create a test account:
 * email: `admin@helloflask.com`
 * password: `moments`
 
+Now go to Azure student website [https://azure.microsoft.com/en-us/free/students]
+Login using school account. 
+Create a computer vision instance by following the onscreen instructions. 
+Note down the Key and Endpoint from the dashboard after creation of instance.
+Create a .env file in the outermost directory of the cloned repo. The path should be similar to moments/.env.
+In this file, add the key and endpoint in the following manner:
+
+key = COPIED_KEY
+endpoint = COPIED_ENDPOINT
+
+Save and exit this file. 
+
+Without these credentials, the application will not work. 
+
 Now you can run the app:
 
 ```
 $ pdm run flask run
 * Running on http://127.0.0.1:5000/
 ```
+
+If there are still any dependecy errors, they can be installed by using the pip install package_name command. 
 
 ## License
 
