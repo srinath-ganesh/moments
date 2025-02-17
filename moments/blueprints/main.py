@@ -9,6 +9,8 @@ from moments.forms.main import CommentForm, DescriptionForm, TagForm
 from moments.models import Collection, Comment, Follow, Notification, Photo, Tag, User
 from moments.notifications import push_collect_notification, push_comment_notification
 from moments.utils import flash_errors, redirect_back, rename_image, resize_image, validate_image
+from model import alt_text_generate, analyze_image_objects
+
 
 main_bp = Blueprint('main', __name__)
 
@@ -133,8 +135,12 @@ def upload():
         f.save(current_app.config['MOMENTS_UPLOAD_PATH'] / filename)
         filename_s = resize_image(f, filename, current_app.config['MOMENTS_PHOTO_SIZES']['small'])
         filename_m = resize_image(f, filename, current_app.config['MOMENTS_PHOTO_SIZES']['medium'])
+        model_generated_alt_text = alt_text_generate(current_app.config['MOMENTS_UPLOAD_PATH'] / filename)
+        model_generated_tag_models = analyze_image_objects(current_app.config['MOMENTS_UPLOAD_PATH'] / filename)
+        model_generated_tags = [Tag(name=tag) for tag in model_generated_tag_models]
+
         photo = Photo(
-            filename=filename, filename_s=filename_s, filename_m=filename_m, author=current_user._get_current_object()
+            filename=filename, filename_s=filename_s, filename_m=filename_m, author=current_user._get_current_object(), description=model_generated_alt_text, tags=model_generated_tags
         )
         db.session.add(photo)
         db.session.commit()
